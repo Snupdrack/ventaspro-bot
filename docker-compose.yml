@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  bot:
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-synkdata2024}
+      - DATA_DIR=/app/data
+    volumes:
+      - ./data:/app/data
+      - ./frontend:/app/frontend:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
